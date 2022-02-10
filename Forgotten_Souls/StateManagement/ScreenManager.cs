@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Forgotten_Souls.StateManagement
 {
@@ -37,8 +38,8 @@ namespace Forgotten_Souls.StateManagement
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            Font = content.Load<SpriteFont>("getafontlol");
-            BlankTexture = content.Load<Texture2D>("fillwithsomethingagainlol");
+            Font = content.Load<SpriteFont>("menufont");
+            BlankTexture = content.Load<Texture2D>("blank");
 
             foreach(var screen in screens)
             {

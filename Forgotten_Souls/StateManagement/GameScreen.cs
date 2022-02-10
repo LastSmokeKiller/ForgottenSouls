@@ -55,6 +55,12 @@ namespace Forgotten_Souls.StateManagement
                     ? ScreenState.TransitionOff
                     : ScreenState.Hidden;
             }
+            else
+            {
+                ScreenState = UpdateTransitionPosition(gameTime, TransitionOnTime, -1)
+                    ? ScreenState.TransitionOn
+                    : ScreenState.Active;
+            }
         }
 
         private bool UpdateTransitionPosition(GameTime gameTime, TimeSpan time, int direction)

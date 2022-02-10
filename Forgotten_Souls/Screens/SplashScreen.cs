@@ -18,7 +18,7 @@ namespace Forgotten_Souls.Screens
             base.Activate();
 
             if (content == null) content = new ContentManager(ScreenManager.Game.Services, "Content");
-            background = content.Load<Texture2D>("placeholder");
+            background = content.Load<Texture2D>("Splash");
             displayTime = TimeSpan.FromSeconds(2);
         }
 

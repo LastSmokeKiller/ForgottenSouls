@@ -25,7 +25,7 @@ namespace Forgotten_Souls.Screens
             if (content == null)
                 content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            backgroundTexture = content.Load<Texture2D>("backgroundplaceholderlol");
+            backgroundTexture = content.Load<Texture2D>("BackGround");
         }
 
         public override void Unload()

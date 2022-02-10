@@ -13,22 +13,26 @@ namespace Forgotten_Souls.Screens
             var quitGameMenuEntry = new MenuEntry("Quit Game");
 
             resumeGameMenuEntry.Selected += OnCancel;
-            quitGameMenuEntry.Selected += quitGameMenuEntrySelected;
+            quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
+
+            MenuEntries.Add(resumeGameMenuEntry);
+            MenuEntries.Add(quitGameMenuEntry);
         }
-    }
 
-    private void QuitGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
-    {
-        const string message = "Are you sure you want to leave so soon?";
-        var confirmQuitMessageBox = new MessageBoxScreen(message);
 
-        confirmQuitMessageBox.Accepted += confirmQuitMessageBoxAccepted;
+        private void QuitGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            const string message = "Are you sure you want to leave so soon?";
+            var confirmQuitMessageBox = new MessageBoxScreen(message);
 
-        ScreenManager.AddScreen(confirmQuitMessageBox, controllingPlayer);
-    }
+            confirmQuitMessageBox.Accepted += ConfirmQuitMessageBoxAccepted;
 
-    private void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
-    {
-        LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new MainMenuScreen());
+            ScreenManager.AddScreen(confirmQuitMessageBox, ControllingPlayer);
+        }
+
+        private void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
+        {
+            LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new MainMenuScreen());
+        }
     }
 }

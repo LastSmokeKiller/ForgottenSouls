@@ -38,7 +38,7 @@ namespace Forgotten_Souls.Screens
             if (content == null)
                 content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            gameFont = content.Load<SpriteFont>("gamefont");
+            gameFont = content.Load<SpriteFont>("menufont");
 
             Thread.Sleep(1000);
 
@@ -68,6 +68,16 @@ namespace Forgotten_Souls.Screens
             if (IsActive)
             {
                 //This is where we insert information for enemies
+                const float randomization = 10;
+
+                enemyPosition.X += (float)(random.NextDouble() - 0.5) * randomization;
+                enemyPosition.Y += (float)(random.NextDouble() - 0.5) * randomization;
+
+                var targetPosition = new Vector2(
+                    ScreenManager.GraphicsDevice.Viewport.Width / 2 - gameFont.MeasureString("Insert Gameplay Here").X / 2,
+                    200);
+
+                enemyPosition = Vector2.Lerp(enemyPosition, targetPosition, 0.05f);
             }
         }
 
@@ -113,12 +123,13 @@ namespace Forgotten_Souls.Screens
 
         public override void Draw(GameTime gameTime)
         {
-            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.Chocolate, 0, 0);
+            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.CornflowerBlue, 0, 0);
 
             var spriteBatch = ScreenManager.SpriteBatch;
 
             spriteBatch.Begin();
 
+            spriteBatch.DrawString(gameFont, "// TODO", playerPosition, Color.Red);
             spriteBatch.DrawString(gameFont, "Make Something instead of a draw string", playerPosition, Color.Green);
 
             spriteBatch.End();

@@ -25,7 +25,7 @@ namespace Forgotten_Souls.Screens
             if (includeUsageText)
                 message = Message + usageText;
             else
-                message = message;
+                message = Message;
 
             IsPopup = true;
 
@@ -43,7 +43,7 @@ namespace Forgotten_Souls.Screens
         public override void Activate()
         {
             var content = ScreenManager.Game.Content;
-            gradientTexture = content.Load<Texture2D>("placeholder");
+            gradientTexture = content.Load<Texture2D>("gradient");
         }
 
         public override void HandleInput(GameTime gameTime, InputState input)

@@ -15,6 +15,10 @@ namespace Forgotten_Souls.Screens
             var exitMenuEntry = new MenuEntry("Exit");
 
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
+            exitMenuEntry.Selected += OnCancel;
+
+            MenuEntries.Add(playGameMenuEntry);
+            MenuEntries.Add(exitMenuEntry);
         }
 
         private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)

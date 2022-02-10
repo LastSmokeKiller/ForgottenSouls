@@ -50,6 +50,10 @@ namespace Forgotten_Souls.Screens
         {
             var color = isSelected ? Color.Yellow : Color.White;
 
+            double time = gameTime.TotalGameTime.TotalSeconds;
+            float pulsate = (float)Math.Sin(time * 6) + 1;
+            float scale = 1 + pulsate * 0.05f * selectionFade;
+
             color *= screen.TransitionAlpha;
 
             var screenManager = screen.ScreenManager;
@@ -59,7 +63,7 @@ namespace Forgotten_Souls.Screens
             var origin = new Vector2(0, font.LineSpacing / 2);
 
             spriteBatch.DrawString(font, text, position, color, 0,
-                origin, 0.1f, SpriteEffects.None, 0);
+                origin, scale, SpriteEffects.None, 0);
         }
 
         public virtual int GetHeight(MenuScreen screen)
