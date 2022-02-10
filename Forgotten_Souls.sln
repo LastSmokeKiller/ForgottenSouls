@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forgotten_Souls", "Forgotten_Souls\Forgotten_Souls.csproj", "{B310D596-C7FD-49AE-AFED-CBF2C63BC4B9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B310D596-C7FD-49AE-AFED-CBF2C63BC4B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B310D596-C7FD-49AE-AFED-CBF2C63BC4B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B310D596-C7FD-49AE-AFED-CBF2C63BC4B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B310D596-C7FD-49AE-AFED-CBF2C63BC4B9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6E5224AD-A129-4EEF-9DEA-339283579FC1}
+	EndGlobalSection
+EndGlobal
