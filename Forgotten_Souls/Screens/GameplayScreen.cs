@@ -23,16 +23,12 @@ namespace Forgotten_Souls.Screens
         private Texture2D farmerTexture;
 
         private SoundEffect bang;
+        private Song gameMusic;
 
         private Vector2 playerPosition = new Vector2(300, 300);
         private Vector2 farmerPosition = new Vector2(100, 100);
         private BoundingCircle farmerBound;
         private BoundingCircle playerBound;
-
-        private KeyboardState currentKeyboardState;
-        private KeyboardState priorKeyboardState;
-        private GamePadState currentGamePadState;
-        private GamePadState priorGamePadState;
 
         private string farmerMessage = "Hello there";
         private bool farmerDisplay;
@@ -67,8 +63,9 @@ namespace Forgotten_Souls.Screens
                 content = new ContentManager(ScreenManager.Game.Services, "Content");
 
             gameFont = content.Load<SpriteFont>("menufont");
-            playerTexture = content.Load<Texture2D>("Player");
+            playerTexture = content.Load<Texture2D>("Chicken");
             farmerTexture = content.Load<Texture2D>("Farmer");
+
             bang = content.Load<SoundEffect>("Laser_Shoot3");
 
             Thread.Sleep(1000);
