@@ -21,19 +21,19 @@ namespace Forgotten_Souls.Screens
         }
 
         public static void Load(ScreenManager screenManager, bool LoadingIsSlow,
-                                PlayerIndex? controllingPlayer, params GameScreen[] ScreensToLoad)
+                                PlayerIndex? ControllingPlayer, params GameScreen[] ScreensToLoad)
         {
             foreach (var screen in screenManager.GetScreens())
                 screen.ExitScreen();
 
             var loadingScreen = new LoadingScreen(screenManager, LoadingIsSlow, ScreensToLoad);
 
-            screenManager.AddScreen(loadingScreen, controllingPlayer);
+            screenManager.AddScreen(loadingScreen, ControllingPlayer);
         }
 
-        public override void Update(GameTime gameTime, bool OtherScreenHasFocus, bool coveredByOtherScreen)
+        public override void Update(GameTime gameTime, bool OtherScreenHasFocus, bool CoveredByOtherScreen)
         {
-            base.Update(gameTime, OtherScreenHasFocus, coveredByOtherScreen);
+            base.Update(gameTime, OtherScreenHasFocus, CoveredByOtherScreen);
 
             if (otherScreensAreGone)
             {

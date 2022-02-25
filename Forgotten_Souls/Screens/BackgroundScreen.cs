@@ -25,7 +25,7 @@ namespace Forgotten_Souls.Screens
             if (content == null)
                 content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            backgroundTexture = content.Load<Texture2D>("BackGround");
+            backgroundTexture = content.Load<Texture2D>("Background");
         }
 
         public override void Unload()
@@ -33,7 +33,7 @@ namespace Forgotten_Souls.Screens
             content.Unload();
         }
 
-        public override void Update(GameTime gameTime, bool OtherScreenHasFocus, bool coveredByOtherScreen)
+        public override void Update(GameTime gameTime, bool OtherScreenHasFocus, bool CoveredByOtherScreen)
         {
             base.Update(gameTime, OtherScreenHasFocus, false);
         }

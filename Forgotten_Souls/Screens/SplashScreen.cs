@@ -32,8 +32,20 @@ namespace Forgotten_Souls.Screens
 
         public override void Draw(GameTime gameTime)
         {
+            const string message = "LSK GAMES";
+            var font = ScreenManager.Font;
+
+            var viewport = ScreenManager.GraphicsDevice.Viewport;
+            var viewportSize = new Vector2(viewport.Width, viewport.Height);
+            var textSize = font.MeasureString(message);
+            var higher = new Vector2(0, 225);
+            var textPostition = ((viewportSize - textSize) / 2) + higher;
+
             ScreenManager.SpriteBatch.Begin();
+     
             ScreenManager.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
+            ScreenManager.SpriteBatch.DrawString(font, message, textPostition, Color.White);
+
             ScreenManager.SpriteBatch.End();
         }
     }
