@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Forgotten_Souls.StateManagement;
 using Forgotten_Souls.Screens;
+using Microsoft.Xna.Framework.Media;
 
 namespace Forgotten_Souls
 {
@@ -10,6 +11,10 @@ namespace Forgotten_Souls
     {
         private GraphicsDeviceManager graphics;
         private readonly ScreenManager screenManager;
+        public Viewport viewport;
+
+
+        public Song menuMusic;
 
         public Game1()
         {
@@ -22,6 +27,8 @@ namespace Forgotten_Souls
 
             screenManager = new ScreenManager(this);
             Components.Add(screenManager);
+
+            Window.Title = "FORGOTTEN SOULS";
 
             AddInitialScreens();
         }
@@ -40,7 +47,10 @@ namespace Forgotten_Souls
             base.Initialize();
         }
 
-        protected override void LoadContent(){ }
+        protected override void LoadContent()
+        {
+            menuMusic = Content.Load<Song>("Phantom");
+        }
 
         protected override void Update(GameTime gameTime)
         {

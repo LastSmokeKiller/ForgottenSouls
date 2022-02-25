@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 
 
 namespace Forgotten_Souls.StateManagement
@@ -16,6 +17,8 @@ namespace Forgotten_Souls.StateManagement
         private readonly ContentManager content;
         private readonly InputState input = new InputState();
 
+        public Song menuMusic;
+
         private bool isInitialized;
 
         public SpriteBatch SpriteBatch { get; private set; }
@@ -27,6 +30,7 @@ namespace Forgotten_Souls.StateManagement
         public ScreenManager(Game game) : base(game)
         {
             content = new ContentManager(game.Services, "Content");
+
         }
 
         public override void Initialize()
@@ -40,6 +44,10 @@ namespace Forgotten_Souls.StateManagement
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             Font = content.Load<SpriteFont>("menufont");
             BlankTexture = content.Load<Texture2D>("blank");
+
+            menuMusic = content.Load<Song>("Phantom");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(menuMusic);
 
             foreach(var screen in screens)
             {

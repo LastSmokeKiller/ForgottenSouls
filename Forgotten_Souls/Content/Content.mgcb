@@ -86,6 +86,12 @@
 /processorParam:TextureFormat=Compressed
 /build:menufont.spritefont
 
+#begin Phantom - Density & Time.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Phantom - Density & Time.mp3;Phantom.mp3
+
 #begin Player.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -97,6 +103,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Player.png
+
+#begin sound-ambience-sonido-ambiente-2-14039.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sound-ambience-sonido-ambiente-2-14039.mp3;ambience.mp3
 
 #begin Splash.png
 /importer:TextureImporter

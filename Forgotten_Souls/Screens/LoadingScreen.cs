@@ -14,6 +14,7 @@ namespace Forgotten_Souls.Screens
 
         private LoadingScreen(ScreenManager screenManager, bool LoadingIsSlow, GameScreen[] ScreensToLoad)
         {
+            
             loadingIsSlow = LoadingIsSlow;
             screensToLoad = ScreensToLoad;
 

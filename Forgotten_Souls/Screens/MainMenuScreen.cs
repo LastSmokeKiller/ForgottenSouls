@@ -3,19 +3,28 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Forgotten_Souls.StateManagement;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 
 namespace Forgotten_Souls.Screens
 {
     public class MainMenuScreen : MenuScreen
     {
-        public MainMenuScreen() : base("Main Menu")
+        private Song menuMusic;
+        private ContentManager content;
+       
+
+        public MainMenuScreen() : base("Forgotten Souls")
         {
             var playGameMenuEntry = new MenuEntry("Play Game");
             var exitMenuEntry = new MenuEntry("Exit");
 
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
             exitMenuEntry.Selected += OnCancel;
+
+            
 
             MenuEntries.Add(playGameMenuEntry);
             MenuEntries.Add(exitMenuEntry);
@@ -25,6 +34,16 @@ namespace Forgotten_Souls.Screens
         {
             LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
         }
+
+        public override void Activate()
+        {
+            if (content == null)
+                content = new ContentManager(ScreenManager.Game.Services, "Content");
+
+            menuMusic = content.Load<Song>("Phantom");
+            MediaPlayer.Play(menuMusic);
+        }
+
 
         protected override void OnCancel(PlayerIndex playerIndex)
         {
@@ -38,6 +57,7 @@ namespace Forgotten_Souls.Screens
 
         private void ConfirmExitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
         {
+            MediaPlayer.Play(menuMusic);
             ScreenManager.Game.Exit();
         }
     }

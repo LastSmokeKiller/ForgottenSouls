@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Forgotten_Souls.StateManagement;
+using Microsoft.Xna.Framework.Media;
 
 namespace Forgotten_Souls.Screens
 {
@@ -75,6 +76,7 @@ namespace Forgotten_Souls.Screens
 
         protected virtual void OnCancel(PlayerIndex playerIndex)
         {
+            MediaPlayer.Resume();
             ExitScreen();
         }
 

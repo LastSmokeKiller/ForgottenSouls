@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Forgotten_Souls.StateManagement;
+using Microsoft.Xna.Framework.Media;
 
 namespace Forgotten_Souls.Screens
 {
@@ -12,6 +13,7 @@ namespace Forgotten_Souls.Screens
         private string text;
         private float selectionFade;
         private Vector2 position;
+      
 
         public string Text
         {
@@ -41,7 +43,9 @@ namespace Forgotten_Souls.Screens
             float fadeSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * 4;
 
             if (isSelected)
+            {
                 selectionFade = Math.Min(selectionFade + fadeSpeed, 1);
+            }
             else
                 selectionFade = Math.Max(selectionFade - fadeSpeed, 0);
         }
