@@ -22,3 +22,4 @@ Splash.png
 Chicken.png
 Farmer.png
 Player.png
+GameplayBackground.png
