@@ -21,6 +21,7 @@ namespace Forgotten_Souls.Screens
 
         private Texture2D playerTexture;
         private Texture2D farmerTexture;
+        private Texture2D gameplayTexture;
 
         private SoundEffect bang;
         private Song gameMusic;
@@ -29,11 +30,13 @@ namespace Forgotten_Souls.Screens
         private float bulletTimer;
         public bool BulletRemoved = false;
         public Vector2 BulletPosition;
-        public float BulletLinearVelocity = 4f;
+        public float BulletLinearVelocity = 20f;
         public Vector2 BulletOrigin;
 
         public float PlayerRotation;
         public Vector2 PlayerOrigin;
+
+        private float tutorialTimer;
 
         public Vector2 Direction;
 
@@ -81,6 +84,7 @@ namespace Forgotten_Souls.Screens
             gameFont = content.Load<SpriteFont>("menufont");
             playerTexture = content.Load<Texture2D>("Chicken");
             farmerTexture = content.Load<Texture2D>("Farmer");
+            gameplayTexture = content.Load<Texture2D>("GameplayBackground");
 
             bang = content.Load<SoundEffect>("Laser_Shoot3");
             gameMusic = content.Load<Song>("ambience");
@@ -107,13 +111,14 @@ namespace Forgotten_Souls.Screens
         public override void Update(GameTime gameTime, bool OtherScreenHasFocus, bool CoveredByOtherScreen)
         {
             base.Update(gameTime, OtherScreenHasFocus, false);
+
             bulletTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(bulletTimer > 2f)
+            if (bulletTimer >= 2f)
             {
                 BulletRemoved = true;
             }
-                
+            else BulletPosition += playerPosition + Direction * BulletLinearVelocity;
 
             if (CoveredByOtherScreen)
                 pauseAlpha = Math.Min(pauseAlpha + 1f / 32, 1);
@@ -139,6 +144,7 @@ namespace Forgotten_Souls.Screens
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
 
+            
 
             int playerIndex = (int)ControllingPlayer.Value;
 
@@ -186,10 +192,13 @@ namespace Forgotten_Souls.Screens
                 Direction = new Vector2((float)Math.Cos(PlayerRotation), (float)Math.Sin(PlayerRotation));
                 if (input.IsNewKeyPress(Keys.Space, player, out playIn) || input.IsNewButtonPress(Buttons.A, player, out playIn))
                 {
+                    bulletTimer = 0;
                     bang.Play();
-                    BulletPosition += Direction * BulletLinearVelocity;
                 }
-                    
+                
+
+                
+
 
                 var thumbstick = gamePadState.ThumbSticks.Left;
 
@@ -230,13 +239,16 @@ namespace Forgotten_Souls.Screens
         public override void Draw(GameTime gameTime)
         {
             ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.CornflowerBlue, 0, 0);
+            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
 
             var spriteBatch = ScreenManager.SpriteBatch;
+            tutorialTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             spriteBatch.Begin();
-
+            spriteBatch.Draw(gameplayTexture, Vector2.Zero , Color.White);
             spriteBatch.Draw(playerTexture, playerPosition,null, Color.White, PlayerRotation, PlayerOrigin, 1f, SpriteEffects.None, 0);
             spriteBatch.Draw(playerTexture, BulletPosition, null, Color.Red, PlayerRotation, BulletOrigin, .25f, SpriteEffects.None, 0);
+            if (tutorialTimer < 3f) spriteBatch.DrawString(gameFont, "Press Space or A to fire weapon", playerPosition + new Vector2(32, -64), Color.Black);
             spriteBatch.Draw(farmerTexture, farmerPosition, Color.White);
             if (farmerDisplay) spriteBatch.DrawString(gameFont, farmerMessage, farmerPosition, Color.White);
             spriteBatch.End();
