@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Forgotten_Souls.Sprites
 {
-    public class Player : ICloneable
+    public class Player 
     {
 
         private Texture2D texture;
@@ -50,7 +50,7 @@ namespace Forgotten_Souls.Sprites
         private ScreenManager screenManager;
         private Viewport viewport;
 
-        public Player(Game Game, Viewport Viewport, Vector2 StartPosition)
+        public Player(Game Game, Viewport Viewport, Vector2 StartPosition, List<Bullet> b)
         {
             game = Game;
             viewport = Viewport;
@@ -61,7 +61,7 @@ namespace Forgotten_Souls.Sprites
                 new[] { Keys.Back, Keys.Escape }, true);
 
             bound = new BoundingCircle(Position - new Vector2(-32, -32), 32);
-
+            bullets = b;
 
         }
 
@@ -80,6 +80,10 @@ namespace Forgotten_Souls.Sprites
         public void Update(GameTime gameTime, List<Bullet> Bullets)
         {
             bullets = Bullets;
+            foreach(Bullet b in bullets)
+            {
+                b.Update(gameTime);
+            }
         }
 
         public void HandleInput(GameTime gameTime, InputState input, KeyboardState keyboard, GamePadState gamePad, PlayerIndex player, PlayerIndex playIn)
@@ -157,12 +161,8 @@ namespace Forgotten_Souls.Sprites
 
         private void AddBullet(List<Bullet> bullets)
         {
-            var b = Bullet.Clone() as Bullet;
-            b.Direction = this.Direction;
-            b.LinearVelocity = this.LinearVelocity * 2;
-            b.LifeSpan = 2f;
-            b.Parent = this;
-            b.Postion = this.Position;
+            Bullet b = new Bullet(this.Position, this.Direction, this.LinearVelocity * 2, this, this.Rotation, 2f);
+
 
             bullets.Add(b);
         }
@@ -176,14 +176,14 @@ namespace Forgotten_Souls.Sprites
 
 
             spriteBatch.Draw(texture, Position, null, Color.White, Rotation, Origin, 1f, SpriteEffects.None, 0);
-            Bullet.Draw(spriteBatch, gameTime, bullets, texture);
+            foreach(Bullet b in bullets) b.Draw(spriteBatch, gameTime, bullets, texture);
             if (tutorialTimer < 3f) spriteBatch.DrawString(font, "Press Space or A to fire weapon", Position + new Vector2(32, -64), Color.Black);
 
         }
 
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
+        //public object Clone()
+       // {
+         //   return this.MemberwiseClone();
+       // }
     }
 }

@@ -93,15 +93,12 @@ namespace Forgotten_Souls.Screens
             gameplayTexture = content.Load<Texture2D>("GameplayBackground");
             
             
-            player = new Player(game, ScreenManager.GraphicsDevice.Viewport, playerPosition1);
-            player.LoadContent(content);
+            
             Bullet b = new Bullet();
-            player.Bullet = b;
-            bullets = new List<Bullet>()
-            {
-                player.Bullet
-            };
-
+            bullets = new List<Bullet>();
+            bullets.Add(b);
+            player = new Player(game, ScreenManager.GraphicsDevice.Viewport, playerPosition1, bullets);
+            player.LoadContent(content);
             gameMusic = content.Load<Song>("ambience");
             menuMusic = content.Load<Song>("Phantom");
             MediaPlayer.Stop();
@@ -127,8 +124,14 @@ namespace Forgotten_Souls.Screens
         {
             base.Update(gameTime, OtherScreenHasFocus, false);
 
-            
-
+            player.Update(gameTime, bullets);
+            if (bullets != null && bullets.Count > 0)
+            {
+                foreach (Bullet b in bullets)
+                {
+                    if (b.IsRemoved) bullets.Remove(b);
+                }
+            }
             if (CoveredByOtherScreen)
                 pauseAlpha = Math.Min(pauseAlpha + 1f / 32, 1);
             else
