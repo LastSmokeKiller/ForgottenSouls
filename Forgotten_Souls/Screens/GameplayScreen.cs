@@ -19,6 +19,8 @@ namespace Forgotten_Souls.Screens
         private ContentManager content;
         private SpriteFont gameFont;
 
+        private List<Bullet> bullets;
+
         private Texture2D playerTexture;
         private Texture2D farmerTexture;
         private Texture2D gameplayTexture;
@@ -26,6 +28,9 @@ namespace Forgotten_Souls.Screens
         private SoundEffect bang;
         private Song gameMusic;
         private Song menuMusic;
+
+        private Player player;
+        private Game game;
 
         private float bulletTimer;
         public bool BulletRemoved = false;
@@ -36,11 +41,11 @@ namespace Forgotten_Souls.Screens
         public float PlayerRotation;
         public Vector2 PlayerOrigin;
 
-        private float tutorialTimer;
 
         public Vector2 Direction;
+        public PlayerIndex PlayerIndex;
 
-        private Vector2 playerPosition = new Vector2(300, 300);
+        private Vector2 playerPosition1 = new Vector2(300, 300);
         private Vector2 farmerPosition = new Vector2(100, 100);
         private BoundingCircle farmerBound;
         private BoundingCircle playerBound;
@@ -68,11 +73,13 @@ namespace Forgotten_Souls.Screens
                 new[] { Buttons.Start, Buttons.Back },
                 new[] { Keys.Back, Keys.Escape }, true);
 
+            game = Game;
+
             
 
             farmerBound = new BoundingCircle(farmerPosition - new Vector2(-32, -32), 32);
 
-            playerBound = new BoundingCircle(playerPosition - new Vector2(-32, -32), 32);
+
 
         }
 
@@ -82,19 +89,27 @@ namespace Forgotten_Souls.Screens
                 content = new ContentManager(ScreenManager.Game.Services, "Content");
 
             gameFont = content.Load<SpriteFont>("menufont");
-            playerTexture = content.Load<Texture2D>("Chicken");
             farmerTexture = content.Load<Texture2D>("Farmer");
             gameplayTexture = content.Load<Texture2D>("GameplayBackground");
+            
+            
+            player = new Player(game, ScreenManager.GraphicsDevice.Viewport, playerPosition1);
+            player.LoadContent(content);
+            Bullet b = new Bullet();
+            player.Bullet = b;
+            bullets = new List<Bullet>()
+            {
+                player.Bullet
+            };
 
-            bang = content.Load<SoundEffect>("Laser_Shoot3");
             gameMusic = content.Load<Song>("ambience");
             menuMusic = content.Load<Song>("Phantom");
             MediaPlayer.Stop();
             MediaPlayer.Play(gameMusic);
             Thread.Sleep(1000);
 
-            PlayerOrigin = new Vector2((float)playerTexture.Width/2, (float)playerTexture.Height/2);
-            BulletOrigin = new Vector2((float)playerTexture.Width / 2, (float)playerTexture.Height / 2);
+            
+           
             ScreenManager.Game.ResetElapsedTime();
         }
 
@@ -112,13 +127,7 @@ namespace Forgotten_Souls.Screens
         {
             base.Update(gameTime, OtherScreenHasFocus, false);
 
-            bulletTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (bulletTimer >= 2f)
-            {
-                BulletRemoved = true;
-            }
-            else BulletPosition += playerPosition + Direction * BulletLinearVelocity;
+            
 
             if (CoveredByOtherScreen)
                 pauseAlpha = Math.Min(pauseAlpha + 1f / 32, 1);
@@ -144,96 +153,32 @@ namespace Forgotten_Souls.Screens
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
 
-            
-
             int playerIndex = (int)ControllingPlayer.Value;
-
-            var playIn = ControllingPlayer.Value;
+            
+            PlayerIndex playIn = ControllingPlayer.Value;
 
             var keyboardState = input.CurrentKeyboardStates[playerIndex];
             var gamePadState = input.CurrentGamePadStates[playerIndex];
 
-            
-
             bool gamePadDisconnected = !gamePadState.IsConnected && input.GamePadWasConnected[playerIndex];
 
-            PlayerIndex player;
-            if (pauseAction.Occurred(input, ControllingPlayer, out player) || gamePadDisconnected)
+            PlayerIndex Player;
+            if (pauseAction.Occurred(input, ControllingPlayer, out Player) || gamePadDisconnected)
             {
                 ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
 
             }
             else
             {
-                var movement = Vector2.Zero;
-
-                if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
-                {
-                    PlayerRotation = 3 * pi / 2;
-                    movement.X--;
-                }
-                if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
-                {
-                    movement.X++;
-                    PlayerRotation = pi / 2;
-                    
-                }
-                if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
-                {
-                    movement.Y--;
-                    PlayerRotation = 2 * pi;
-                    
-                }
-                if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
-                {
-                    movement.Y++;
-                    PlayerRotation = pi;
-                }
-                Direction = new Vector2((float)Math.Cos(PlayerRotation), (float)Math.Sin(PlayerRotation));
-                if (input.IsNewKeyPress(Keys.Space, player, out playIn) || input.IsNewButtonPress(Buttons.A, player, out playIn))
-                {
-                    bulletTimer = 0;
-                    bang.Play();
-                }
-                
+                player.HandleInput(gameTime, input, keyboardState, gamePadState,Player, playIn);
+            }
 
                 
 
-
-                var thumbstick = gamePadState.ThumbSticks.Left;
-
-                movement.X += thumbstick.X;
-                movement.Y -= thumbstick.Y;
-
-                if (movement.Length() > 1)
-                    movement.Normalize();
-
-                playerPosition += movement * 8f;
-
-                CheckBounds();
-            }
+            
         }
 
-        public void CheckBounds()
-        {
-            Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
-            if(playerPosition.Y < 32)
-            {
-                playerPosition.Y = 32;
-            }
-            if(playerPosition.Y > viewport.Height - 32)
-            {
-                playerPosition.Y = viewport.Height - 32;
-            }
-            if(playerPosition.X < 32)
-            {
-                playerPosition.X = 32;
-            }
-            if(playerPosition.X > viewport.Width - 32)
-            {
-                playerPosition.X = viewport.Width - 32;
-            }
-        }
+       
         
 
         public override void Draw(GameTime gameTime)
@@ -242,13 +187,12 @@ namespace Forgotten_Souls.Screens
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
 
             var spriteBatch = ScreenManager.SpriteBatch;
-            tutorialTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            
 
             spriteBatch.Begin();
             spriteBatch.Draw(gameplayTexture, Vector2.Zero , Color.White);
-            spriteBatch.Draw(playerTexture, playerPosition,null, Color.White, PlayerRotation, PlayerOrigin, 1f, SpriteEffects.None, 0);
-            spriteBatch.Draw(playerTexture, BulletPosition, null, Color.Red, PlayerRotation, BulletOrigin, .25f, SpriteEffects.None, 0);
-            if (tutorialTimer < 3f) spriteBatch.DrawString(gameFont, "Press Space or A to fire weapon", playerPosition + new Vector2(32, -64), Color.Black);
+            player.Draw(gameTime, spriteBatch);
+            
             spriteBatch.Draw(farmerTexture, farmerPosition, Color.White);
             if (farmerDisplay) spriteBatch.DrawString(gameFont, farmerMessage, farmerPosition, Color.White);
             spriteBatch.End();

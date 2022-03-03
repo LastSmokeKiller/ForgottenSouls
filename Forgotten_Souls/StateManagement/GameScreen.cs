@@ -22,6 +22,8 @@ namespace Forgotten_Souls.StateManagement
 
         public bool IsExiting { get; protected internal set; }
 
+        public Game Game { get; set; }
+
         public bool IsActive => !otherScreenHasFocus && (
             ScreenState == ScreenState.TransitionOn ||
             ScreenState == ScreenState.Active);

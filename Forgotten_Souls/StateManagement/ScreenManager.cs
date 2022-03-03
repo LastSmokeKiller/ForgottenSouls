@@ -27,6 +27,7 @@ namespace Forgotten_Souls.StateManagement
 
         public Texture2D BlankTexture { get; private set; }
 
+
         public ScreenManager(Game game) : base(game)
         {
             content = new ContentManager(game.Services, "Content");
