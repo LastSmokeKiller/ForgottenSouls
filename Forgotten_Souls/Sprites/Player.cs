@@ -113,12 +113,8 @@ namespace Forgotten_Souls.Sprites
                     movement.Y++;
                     Rotation = (float)Math.PI;
                 }
-                Direction = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation));
-                if (input.IsNewKeyPress(Keys.Space, player, out playIn) || input.IsNewButtonPress(Buttons.A, player, out playIn))
-                {
-                    bang.Play();
-                    AddBullet(bullets);
-                }
+                Direction = new Vector2(-MathF.Cos(Rotation), MathF.Sin(Rotation));
+                
 
 
 
@@ -133,8 +129,12 @@ namespace Forgotten_Souls.Sprites
                     movement.Normalize();
 
                 Position += movement * 8f;
-
-                CheckBounds(viewport);
+            if (input.IsNewKeyPress(Keys.Space, player, out playIn) || input.IsNewButtonPress(Buttons.A, player, out playIn))
+            {
+                bang.Play();
+                AddBullet(bullets);
+            }
+            CheckBounds(viewport);
             
         }
 

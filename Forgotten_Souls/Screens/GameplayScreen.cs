@@ -125,7 +125,7 @@ namespace Forgotten_Souls.Screens
             base.Update(gameTime, OtherScreenHasFocus, false);
 
             player.Update(gameTime, bullets);
-            if (bullets != null && bullets.Count > 0)
+            if (bullets.Equals(null) && bullets.Count > 0)
             {
                 foreach (Bullet b in bullets)
                 {
