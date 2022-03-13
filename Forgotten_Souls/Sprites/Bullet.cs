@@ -17,13 +17,17 @@ namespace Forgotten_Souls.Sprites
         public float LinearVelocity;
         public Texture2D bulletText;
         public Player Parent;
-        public float LifeSpan = 2f;
+        public float LifeSpan = 1f;
         protected float rotation;
         public Vector2 Origin;
+        public FireworkParticleSystem Firework;
 
-        public Bullet() { }
+        public Bullet() 
+        {
+            Postion = new Vector2(-1000, -1000);
+        }
 
-        public Bullet(Vector2 position, Vector2 direction, float linerV, Player p, float rot, float lifeSpan)
+        public Bullet(Vector2 position, Vector2 direction, float linerV, Player p, float rot, float lifeSpan, FireworkParticleSystem f)
         {
             Postion = position;
             Direction = direction;
@@ -31,6 +35,7 @@ namespace Forgotten_Souls.Sprites
             Parent = p;
             rotation = rot;
             LifeSpan = lifeSpan;
+            Firework = f;
         }
 
         public void LoadContent(ContentManager content)
@@ -46,6 +51,7 @@ namespace Forgotten_Souls.Sprites
 
             if (timer >= LifeSpan)
             {
+                
                 IsRemoved = true;
                 timer = 0;
             }
@@ -56,8 +62,11 @@ namespace Forgotten_Souls.Sprites
 
         }
 
+        
+
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, List<Bullet> bullets, Texture2D texture)
         {
+            
             spriteBatch.Draw(texture, Postion, null, Color.Red, rotation, Origin, .25f, SpriteEffects.None, 0);
         }
 

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Forgotten_Souls.StateManagement;
 using Forgotten_Souls.Screens;
 using Microsoft.Xna.Framework.Media;
+using Forgotten_Souls.Sprites;
 
 namespace Forgotten_Souls
 {
@@ -13,6 +14,7 @@ namespace Forgotten_Souls
         private readonly ScreenManager screenManager;
         public Viewport viewport;
 
+        public FireworkParticleSystem fireworks;
 
         public Song menuMusic;
 
@@ -36,13 +38,14 @@ namespace Forgotten_Souls
         private void AddInitialScreens()
         {
             screenManager.AddScreen(new BackgroundScreen(), null);
-            screenManager.AddScreen(new MainMenuScreen(), null);
+            screenManager.AddScreen(new MainMenuScreen(this), null);
             screenManager.AddScreen(new SplashScreen(), null);
         }
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            
 
             base.Initialize();
         }

@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using System.Text;
 using Forgotten_Souls.StateManagement;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework;
 
 namespace Forgotten_Souls.Screens
 {
     public class PauseMenuScreen : MenuScreen
     {
 
-
-        public PauseMenuScreen() : base("Paused")
+        public Game game;
+        public PauseMenuScreen(Game g) : base("Paused")
         {
             var resumeGameMenuEntry = new MenuEntry("Resume Game");
             var quitGameMenuEntry = new MenuEntry("Quit Game");
 
             resumeGameMenuEntry.Selected += OnCancel;
             quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
+
+            game = g;
 
             MediaPlayer.Pause();
 
@@ -38,7 +41,7 @@ namespace Forgotten_Souls.Screens
         private void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
         {
             
-            LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new MainMenuScreen());
+            LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new MainMenuScreen(game));
         }
     }
 }

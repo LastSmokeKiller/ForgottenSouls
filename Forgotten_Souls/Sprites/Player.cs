@@ -33,6 +33,10 @@ namespace Forgotten_Souls.Sprites
         public Bullet Bullet;
 
         public int Index;
+        public bool Shaking;
+
+        public bool lor = false;
+        public bool uod = false;
 
 
         private float tutorialTimer;
@@ -49,12 +53,14 @@ namespace Forgotten_Souls.Sprites
         private GameplayScreen gameScreen;
         private ScreenManager screenManager;
         private Viewport viewport;
+        public FireworkParticleSystem Firework;
 
         public Player(Game Game, Viewport Viewport, Vector2 StartPosition, List<Bullet> b)
         {
             game = Game;
             viewport = Viewport;
             Position = StartPosition;
+
 
             pauseAction = new InputAction(
                 new[] { Buttons.Start, Buttons.Back },
@@ -63,6 +69,12 @@ namespace Forgotten_Souls.Sprites
             bound = new BoundingCircle(Position - new Vector2(-32, -32), 32);
             bullets = b;
 
+        }
+
+        public FireworkParticleSystem Initialize(Game game)
+        {
+            Firework = new FireworkParticleSystem(game, 15);
+            return Firework;
         }
 
         public void LoadContent(ContentManager content)
@@ -86,34 +98,38 @@ namespace Forgotten_Souls.Sprites
             }
         }
 
-        public void HandleInput(GameTime gameTime, InputState input, KeyboardState keyboard, GamePadState gamePad, PlayerIndex player, PlayerIndex playIn)
+        public void HandleInput(GameTime gameTime, InputState input, KeyboardState keyboard, GamePadState gamePad, PlayerIndex player, PlayerIndex playIn, ref bool shaking)
         {
 
             
                 var movement = Vector2.Zero;
                 if (keyboard.IsKeyDown(Keys.Left) || keyboard.IsKeyDown(Keys.A))
                 {
-                    Rotation = 3 * (float)Math.PI / 2;
+                    Rotation = (float)Math.PI;
                     movement.X--;
+                    lor = false;
+                    
                 }
                 if (keyboard.IsKeyDown(Keys.Right) || keyboard.IsKeyDown(Keys.D))
                 {
                     movement.X++;
-                    Rotation = (float)Math.PI / 2;
+                    Rotation = 2 * (float)Math.PI;
+                    lor = true;
 
                 }
                 if (keyboard.IsKeyDown(Keys.Up) || keyboard.IsKeyDown(Keys.W))
                 {
                     movement.Y--;
-                    Rotation = 2 * (float)Math.PI;
-
+                    Rotation = 3 * (float)Math.PI /2;
+                uod = false;
                 }
                 if (keyboard.IsKeyDown(Keys.Down) || keyboard.IsKeyDown(Keys.S))
                 {
                     movement.Y++;
-                    Rotation = (float)Math.PI;
+                    Rotation = (float)Math.PI / 2;
+                uod = true;
                 }
-                Direction = new Vector2(-MathF.Cos(Rotation), MathF.Sin(Rotation));
+                Direction = new Vector2(MathF.Cos(Rotation), MathF.Sin(Rotation));
                 
 
 
@@ -131,8 +147,21 @@ namespace Forgotten_Souls.Sprites
                 Position += movement * 8f;
             if (input.IsNewKeyPress(Keys.Space, player, out playIn) || input.IsNewButtonPress(Buttons.A, player, out playIn))
             {
+                float x = -25;
+                float y = -25;
                 bang.Play();
                 AddBullet(bullets);
+                if (lor)
+                {
+                    x = 25;
+                }
+                if (uod)
+                {
+                    y = 25;
+                }
+                Vector2 bomb = new Vector2(x, y);
+                Firework.PlaceFirework(Position + bomb);
+                shaking = true;
             }
             CheckBounds(viewport);
             
@@ -161,7 +190,7 @@ namespace Forgotten_Souls.Sprites
 
         private void AddBullet(List<Bullet> bullets)
         {
-            Bullet b = new Bullet(this.Position, this.Direction, this.LinearVelocity * 2, this, this.Rotation, 2f);
+            Bullet b = new Bullet(this.Position, this.Direction, this.LinearVelocity * 2, this, this.Rotation, 2f, Firework);
 
 
             bullets.Add(b);

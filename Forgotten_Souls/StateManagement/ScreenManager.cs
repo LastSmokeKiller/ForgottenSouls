@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using Forgotten_Souls.Sprites;
 
 
 namespace Forgotten_Souls.StateManagement
@@ -17,6 +18,14 @@ namespace Forgotten_Souls.StateManagement
         private readonly ContentManager content;
         private readonly InputState input = new InputState();
 
+        public const int AlphaBlendDrawOrder = 100;
+
+
+        public FireworkParticleSystem fireworks;
+
+
+        protected BlendState blendState = BlendState.AlphaBlend;
+
         public Song menuMusic;
 
         private bool isInitialized;
@@ -27,11 +36,13 @@ namespace Forgotten_Souls.StateManagement
 
         public Texture2D BlankTexture { get; private set; }
 
+        public Game game1;
 
         public ScreenManager(Game game) : base(game)
         {
             content = new ContentManager(game.Services, "Content");
-
+            game1 = game;
+            
         }
 
         public override void Initialize()
@@ -44,7 +55,7 @@ namespace Forgotten_Souls.StateManagement
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             Font = content.Load<SpriteFont>("menufont");
-            BlankTexture = content.Load<Texture2D>("blank");
+            BlankTexture = content.Load<Texture2D>("blank(copy)");
 
             menuMusic = content.Load<Song>("Phantom");
             MediaPlayer.IsRepeating = true;

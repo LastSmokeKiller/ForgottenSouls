@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Forgotten_Souls.Screens
 {
-    public class GameplayScreen : GameScreen
+    public class GameplayScreen : GameScreen, IParticleEmitter
     {
         private ContentManager content;
         private SpriteFont gameFont;
@@ -24,6 +24,9 @@ namespace Forgotten_Souls.Screens
         private Texture2D playerTexture;
         private Texture2D farmerTexture;
         private Texture2D gameplayTexture;
+
+        public Vector2 Position { get; set; }
+        public Vector2 Velocity { get; set; }
 
         private SoundEffect bang;
         private Song gameMusic;
@@ -41,7 +44,6 @@ namespace Forgotten_Souls.Screens
         public float PlayerRotation;
         public Vector2 PlayerOrigin;
 
-
         public Vector2 Direction;
         public PlayerIndex PlayerIndex;
 
@@ -49,10 +51,13 @@ namespace Forgotten_Souls.Screens
         private Vector2 farmerPosition = new Vector2(100, 100);
         private BoundingCircle farmerBound;
         private BoundingCircle playerBound;
+        public bool shaking;
+        private float shakeTime;
+
+        public FireworkParticleSystem Firework;
 
         private string farmerMessage = "Hello there";
         private bool farmerDisplay;
-        public const float pi = 3.14159274f;
 
 
 
@@ -64,7 +69,7 @@ namespace Forgotten_Souls.Screens
         private float pauseAlpha;
         private readonly InputAction pauseAction;
 
-        public GameplayScreen()
+        public GameplayScreen(Game g)
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -73,15 +78,16 @@ namespace Forgotten_Souls.Screens
                 new[] { Buttons.Start, Buttons.Back },
                 new[] { Keys.Back, Keys.Escape }, true);
 
-            game = Game;
+            game = g;
 
             
-
             farmerBound = new BoundingCircle(farmerPosition - new Vector2(-32, -32), 32);
 
 
 
         }
+
+        
 
         public override void Activate()
         {
@@ -91,7 +97,7 @@ namespace Forgotten_Souls.Screens
             gameFont = content.Load<SpriteFont>("menufont");
             farmerTexture = content.Load<Texture2D>("Farmer");
             gameplayTexture = content.Load<Texture2D>("GameplayBackground");
-            
+
             
             
             Bullet b = new Bullet();
@@ -99,14 +105,18 @@ namespace Forgotten_Souls.Screens
             bullets.Add(b);
             player = new Player(game, ScreenManager.GraphicsDevice.Viewport, playerPosition1, bullets);
             player.LoadContent(content);
+            
             gameMusic = content.Load<Song>("ambience");
             menuMusic = content.Load<Song>("Phantom");
             MediaPlayer.Stop();
             MediaPlayer.Play(gameMusic);
+
+
+            game.Components.Add(player.Initialize(game));
+
+
             Thread.Sleep(1000);
 
-            
-           
             ScreenManager.Game.ResetElapsedTime();
         }
 
@@ -124,6 +134,8 @@ namespace Forgotten_Souls.Screens
         {
             base.Update(gameTime, OtherScreenHasFocus, false);
 
+
+
             player.Update(gameTime, bullets);
             if (bullets.Equals(null) && bullets.Count > 0)
             {
@@ -135,7 +147,7 @@ namespace Forgotten_Souls.Screens
             if (CoveredByOtherScreen)
                 pauseAlpha = Math.Min(pauseAlpha + 1f / 32, 1);
             else
-                pauseAlpha = Math.Max(pauseAlpha + 1f / 32, 0);
+                pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
             if (IsActive)
             {
@@ -168,12 +180,13 @@ namespace Forgotten_Souls.Screens
             PlayerIndex Player;
             if (pauseAction.Occurred(input, ControllingPlayer, out Player) || gamePadDisconnected)
             {
-                ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+                ScreenManager.AddScreen(new PauseMenuScreen(game), ControllingPlayer);
 
             }
             else
             {
-                player.HandleInput(gameTime, input, keyboardState, gamePadState,Player, playIn);
+                player.HandleInput(gameTime, input, keyboardState, gamePadState,Player, playIn, ref shaking);
+                
             }
 
                 
@@ -190,12 +203,28 @@ namespace Forgotten_Souls.Screens
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
 
             var spriteBatch = ScreenManager.SpriteBatch;
-            
+            Matrix shakeTransform = Matrix.Identity;
+            if (shaking)
+            {
+                shakeTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                shakeTransform = Matrix.CreateTranslation(2 *
+                    MathF.Sin(shakeTime), 2 * MathF.Cos(shakeTime), 0);
+                if (shakeTime > 100)
+                {
+                    shakeTime = 0;
+                    shaking = false;
+                }
+            }
+
+            spriteBatch.Begin(transformMatrix: shakeTransform);
+            spriteBatch.Draw(gameplayTexture, Vector2.Zero , Color.White);
+            spriteBatch.End();
 
             spriteBatch.Begin();
-            spriteBatch.Draw(gameplayTexture, Vector2.Zero , Color.White);
             player.Draw(gameTime, spriteBatch);
-            
+            spriteBatch.End();
+
+            spriteBatch.Begin();
             spriteBatch.Draw(farmerTexture, farmerPosition, Color.White);
             if (farmerDisplay) spriteBatch.DrawString(gameFont, farmerMessage, farmerPosition, Color.White);
             spriteBatch.End();
@@ -204,7 +233,10 @@ namespace Forgotten_Souls.Screens
             {
                 float alpha = MathHelper.Lerp(1f - TransitionAlpha, 1f, pauseAlpha / 2);
 
+                
 
+
+                ScreenManager.FadeBackBufferToBlack(alpha);
             } 
         }
     }

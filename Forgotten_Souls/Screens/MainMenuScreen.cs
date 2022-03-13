@@ -14,9 +14,10 @@ namespace Forgotten_Souls.Screens
     {
         private Song menuMusic;
         private ContentManager content;
+        public Game game;
        
 
-        public MainMenuScreen() : base("Forgotten Souls")
+        public MainMenuScreen(Game g) : base("Forgotten Souls")
         {
             var playGameMenuEntry = new MenuEntry("Play Game");
             var exitMenuEntry = new MenuEntry("Exit");
@@ -24,6 +25,7 @@ namespace Forgotten_Souls.Screens
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
             exitMenuEntry.Selected += OnCancel;
 
+            game = g;
             
 
             MenuEntries.Add(playGameMenuEntry);
@@ -32,7 +34,7 @@ namespace Forgotten_Souls.Screens
 
         private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
+            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen(game));
         }
 
         public override void Activate()
