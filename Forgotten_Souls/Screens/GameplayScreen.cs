@@ -216,11 +216,11 @@ namespace Forgotten_Souls.Screens
                 }
             }
 
-            spriteBatch.Begin(transformMatrix: shakeTransform);
+            spriteBatch.Begin();
             spriteBatch.Draw(gameplayTexture, Vector2.Zero , Color.White);
             spriteBatch.End();
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(transformMatrix: shakeTransform);
             player.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
