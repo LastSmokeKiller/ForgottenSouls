@@ -44,7 +44,12 @@ namespace Forgotten_Souls.Sprites
 
         public Vector2 Direction;
 
+        public double shootTime = 0.5;
+        public double gunTimer = 0;
+
         private List<Bullet> bullets;
+
+        public bool canShoot = true;
 
         private BoundingCircle bound;
         public BoundingCircle PlayerBound => bound;
@@ -100,57 +105,91 @@ namespace Forgotten_Souls.Sprites
 
         public void HandleInput(GameTime gameTime, InputState input, KeyboardState keyboard, GamePadState gamePad, PlayerIndex player, PlayerIndex playIn, ref bool shaking)
         {
-
-            
-                var movement = Vector2.Zero;
-                if (keyboard.IsKeyDown(Keys.Left) || keyboard.IsKeyDown(Keys.A))
+            gunTimer += gameTime.ElapsedGameTime.TotalSeconds;
+            if (gunTimer > shootTime) canShoot = true;
+            var movement = Vector2.Zero;
+            if (keyboard.IsKeyDown(Keys.Left))
+            {
+                Rotation = (float)Math.PI;
+                lor = false;
+                if (canShoot)
                 {
-                    Rotation = (float)Math.PI;
-                    movement.X--;
-                    lor = false;
-                    
+                    Shootgun(gameTime, Bullet, ref shaking);
+                    gunTimer = 0.0;
+                    canShoot = false;
                 }
-                if (keyboard.IsKeyDown(Keys.Right) || keyboard.IsKeyDown(Keys.D))
+            }
+            if (keyboard.IsKeyDown(Keys.Right))
+            {
+                Rotation = 2 * (float)Math.PI;
+                lor = true;
+                if (canShoot)
                 {
-                    movement.X++;
-                    Rotation = 2 * (float)Math.PI;
-                    lor = true;
-
+                    Shootgun(gameTime, Bullet, ref shaking);
+                    gunTimer = 0.0;
+                    canShoot = false;
                 }
-                if (keyboard.IsKeyDown(Keys.Up) || keyboard.IsKeyDown(Keys.W))
-                {
-                    movement.Y--;
-                    Rotation = 3 * (float)Math.PI /2;
+            }
+            if (keyboard.IsKeyDown(Keys.Up) )
+            {
+                Rotation = 3 * (float)Math.PI /2;
                 uod = false;
-                }
-                if (keyboard.IsKeyDown(Keys.Down) || keyboard.IsKeyDown(Keys.S))
+                if(canShoot)
                 {
-                    movement.Y++;
-                    Rotation = (float)Math.PI / 2;
-                uod = true;
+                    Shootgun(gameTime, Bullet, ref shaking);
+                    gunTimer = 0.0;
+                    canShoot = false;
                 }
-                Direction = new Vector2(MathF.Cos(Rotation), MathF.Sin(Rotation));
+            }
+            if (keyboard.IsKeyDown(Keys.Down))
+            {
+                Rotation = (float)Math.PI / 2;
+                uod = true;
+                if (canShoot)
+                {
+                    Shootgun(gameTime, Bullet, ref shaking);
+                    gunTimer = 0.0;
+                    canShoot = false;
+                }
+            }
+
+            if ( keyboard.IsKeyDown(Keys.A))
+            {
+                movement.X--;
+            }
+            if ( keyboard.IsKeyDown(Keys.D))
+            {
+                movement.X++;
+            }
+            if ( keyboard.IsKeyDown(Keys.W))
+            {
+                movement.Y--;
+            }
+            if ( keyboard.IsKeyDown(Keys.S))
+            {
+                movement.Y++;
+            }
+
+            Direction = new Vector2(MathF.Cos(Rotation), MathF.Sin(Rotation));
                 
+            var Lthumbstick = gamePad.ThumbSticks.Left;
 
+            movement.X += Lthumbstick.X;
+            movement.Y -= Lthumbstick.Y;
 
+            var Rthumbstick = gamePad.ThumbSticks.Right;
 
+            if (movement.Length() > 1) movement.Normalize();
 
+            Position += movement * 8f;
 
-                var thumbstick = gamePad.ThumbSticks.Left;
-
-                movement.X += thumbstick.X;
-                movement.Y -= thumbstick.Y;
-
-                if (movement.Length() > 1)
-                    movement.Normalize();
-
-                Position += movement * 8f;
+            /*
             if (input.IsNewKeyPress(Keys.Space, player, out playIn) || input.IsNewButtonPress(Buttons.A, player, out playIn))
             {
                 float x = -25;
                 float y = -25;
                 bang.Play();
-                AddBullet(bullets);
+                AddBullet(gameTime, bullets);
                 if (lor)
                 {
                     x = 25;
@@ -163,6 +202,9 @@ namespace Forgotten_Souls.Sprites
                 Firework.PlaceFirework(Position + bomb);
                 shaking = true;
             }
+            */
+
+
             CheckBounds(viewport);
             
         }
@@ -188,10 +230,9 @@ namespace Forgotten_Souls.Sprites
             }
         }
 
-        private void AddBullet(List<Bullet> bullets)
+        private void AddBullet(GameTime gameTime, List<Bullet> bullets)
         {
             Bullet b = new Bullet(this.Position, this.Direction, this.LinearVelocity * 2, this, this.Rotation, 2f, Firework);
-
 
             bullets.Add(b);
         }
@@ -208,6 +249,25 @@ namespace Forgotten_Souls.Sprites
             foreach(Bullet b in bullets) b.Draw(spriteBatch, gameTime, bullets, texture);
             if (tutorialTimer < 3f) spriteBatch.DrawString(font, "Press Space or A to fire weapon", Position + new Vector2(32, -64), Color.Black);
 
+        }
+
+        public void Shootgun(GameTime gameTime, Bullet bullet, ref bool shaking)
+        {
+            float x = -25;
+            float y = -25;
+            bang.Play();
+            AddBullet(gameTime, bullets);
+            if (lor)
+            {
+                x = 25;
+            }
+            if (uod)
+            {
+                y = 25;
+            }
+            Vector2 bomb = new Vector2(x, y);
+            Firework.PlaceFirework(Position + bomb);
+            shaking = true;
         }
 
         //public object Clone()
